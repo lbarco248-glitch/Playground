@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class AreaA {
+    public static String date = "";
+    public static String time = "";
     static Scanner input = new Scanner(System.in);
 
 
@@ -15,44 +17,47 @@ public class AreaA {
     }
 
     public static void main(String[] args) throws IOException {
-        FileWriter fWriter = new FileWriter("Transactions");
+        compiledData();
+    }
+
+
+ public static void compiledData() throws IOException {
+        FileWriter fWriter = new FileWriter("Transactions.txt",true);
         BufferedWriter bWriter = new BufferedWriter(fWriter);
-      //  compiledData();
+        time();
+        System.out.println("What kind of deposit will this be?\nA) Check Deposit\nB) Cash Deposit\nC) Direct Transfer\nD) Other ");
+        char depositType = input.next().charAt(0);
+        String description = "";
+        switch (depositType) {
+            case 'A', 'a' -> description = "Check Deposit";
+            case 'B', 'b' -> description = "Cash Deposit";
+            case 'C', 'c' -> description = "Direct Transfer";
+            case 'D', 'd' -> description = "Other";
+            default -> System.out.println("Invalid selection.");
+        }
+        System.out.println("Deposit amount: (Numerical value only)");
+        float amount = input.nextFloat();
+        System.out.println("Please input the source of the deposit: (i.e. John Smith, Walmart, Chargeback, etc.)");
+        input.nextLine();
+        String vendor = input.nextLine();
+        String data;
+        data = String.format("%s | %s | %s | %s |$%.2f\n", date, time, description, vendor, amount);
+        bWriter.write(data);
+        bWriter.close();
     }
+  /* public static void makePayment() throws IOException {
+      FileWriter fWriter = new FileWriter("Transactions.txt");
+      BufferedWriter bWriter = new BufferedWriter(fWriter);
+
+  } */
 
 
-/*  public static void compiledData() throws IOException {
-    FileWriter fWriter = new FileWriter("Transactions");
-    BufferedWriter bWriter = new BufferedWriter(fWriter);
-    LocalDate originalDate = LocalDate.now();
-    DateTimeFormatter formattedDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    String date = originalDate.format(formattedDate);
-    System.out.println(date);
-    LocalTime originalTime= LocalTime.now();
-    DateTimeFormatter formattedTime = DateTimeFormatter.ofPattern("hh:mm:ss a");
-    String time = originalTime.format(formattedTime);
-    System.out.println(time);
-    System.out.println("What kind of deposit will this be?\nA) Check Deposit\nB) Cash Deposit\nC) Direct Transfer\nD) Other ");
-    char depositType = input.next().charAt(0);
-    String description = "";
-    switch(depositType)
-    {
-     case 'A', 'a' -> description = "Check Deposit";
-     case 'B', 'b' -> description = "Cash Deposit";
-     case 'C', 'c' -> description = "Direct Transfer";
-     case 'D', 'd' -> description = "Other";
-     default -> System.out.println("Invalid selection.");
-    }
-    System.out.println("Deposit amount: (Numerical value only)");
-    float amount = input.nextFloat();
-    System.out.println("Please input the source of the deposit: (i.e. John Smith, Walmart, Chargeback, etc.)");
-    input.nextLine();
-    String vendor = input.nextLine();
-    String data;
-    data = String.format("%s | %s | %s | %s |$%.2f", date, time, description, vendor, amount);
-    bWriter.write(data);
-    bWriter.close();
-
-}*/
-  public static void makePayment()
+  public static void time() {
+      LocalDate originalDate = LocalDate.now();
+      DateTimeFormatter formattedDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      date = originalDate.format(formattedDate);
+      LocalTime originalTime = LocalTime.now();
+      DateTimeFormatter formattedTime = DateTimeFormatter.ofPattern("hh:mm:ss a");
+      time = originalTime.format(formattedTime);
+  }
 }
