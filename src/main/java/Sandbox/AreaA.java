@@ -212,10 +212,11 @@ private static ArrayList<AreaB> getTransactions()
             switch (selection)
             {
                 case 1 -> monthToDate();
-                case 2 -> ledgerDeposits();
-                case 3 -> ledgerPayments();
-                case 4 -> System.out.println("Placeholder4");
-                case 5 -> inLedgerReport = false;
+                case 2 -> previousMonth();
+                case 3 -> yearToDate();
+                case 4 -> previousYear();
+                case 5 -> searchVendor();
+                case 0 -> inLedgerReport = false;
                 default -> System.out.println("Invalid selection.");
             }
         }
@@ -233,6 +234,65 @@ private static ArrayList<AreaB> getTransactions()
             if (givenDate.isBefore(storedDate))
             {
             System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
+            }
+        }
+    }
+    private static void previousMonth()
+    {
+        getTransactions();
+        input.nextLine();
+        for(AreaB transaction:transactions)
+        {
+            LocalDate storedDate = transaction.getDate();
+            LocalDate givenDate = LocalDate.now().minusMonths(1);
+            if (givenDate.isBefore(storedDate))
+            {
+                System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
+            }
+        }
+    }
+
+    private static void yearToDate()
+    {
+        getTransactions();
+        System.out.println("Please input the initial year to review. (Please use the following format: YYYY)");
+        input.nextLine();
+        LocalDate givenYear = LocalDate.parse(input.nextLine() + "-01-01");
+        for(AreaB transaction:transactions)
+        {
+            LocalDate storedDate = transaction.getDate();
+            if (givenYear.isBefore(storedDate))
+            {
+                System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
+            }
+        }
+    }
+    private static void previousYear()
+    {
+        getTransactions();
+        input.nextLine();
+        for(AreaB transaction:transactions)
+        {
+            LocalDate storedDate = transaction.getDate();
+            LocalDate givenDate = LocalDate.now().minusYears(1);
+            if (givenDate.isBefore(storedDate))
+            {
+                System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
+            }
+        }
+    }
+
+    private static void searchVendor()
+    {
+        getTransactions();
+        input.nextLine();
+        System.out.println("Please type which vendor you would like to see entries for: ");
+        String Vendor = input.nextLine().toLowerCase();
+        for(AreaB transaction:transactions)
+        {
+            if (transaction.getVendor().toLowerCase().equals(Vendor))
+            {
+                System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
             }
         }
     }
