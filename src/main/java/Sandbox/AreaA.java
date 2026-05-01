@@ -13,35 +13,61 @@ public class AreaA {
     static Scanner input = new Scanner(System.in);
     static String[] depositDataSplit ={};
     static String[] paymentDataSplit = {};
+    static ArrayList<AreaB> transactions = new ArrayList<>();
 
-    public static void time()
+
+
+public static void time()
+{
+    LocalDate originalDate = LocalDate.now();
+    DateTimeFormatter formattedDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    date = originalDate.format(formattedDate);
+    LocalTime originalTime = LocalTime.now();
+    DateTimeFormatter formattedTime = DateTimeFormatter.ofPattern("hh:mm:ss a");
+    time = originalTime.format(formattedTime);
+}
+
+private static ArrayList<AreaB> getLog() {
+    ArrayList<AreaB> transactions = new ArrayList<>();
+    try
     {
-        LocalDate originalDate = LocalDate.now();
-        DateTimeFormatter formattedDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        date = originalDate.format(formattedDate);
-        LocalTime originalTime = LocalTime.now();
-        DateTimeFormatter formattedTime = DateTimeFormatter.ofPattern("hh:mm:ss a");
-        time = originalTime.format(formattedTime);
+        FileReader fReader = new FileReader("TransactionsFake.csv");
+        BufferedReader bReader = new BufferedReader(fReader);
+        String keyboard;
+        while ((keyboard = bReader.readLine()) != null)
+        {
+            String[] bankInfo = keyboard.split("\\|");
+            AreaB newInfo = new AreaB();
+            newInfo.setDate(bankInfo[0]);
+            newInfo.setTime(bankInfo[1]);
+            newInfo.setDescription(bankInfo[2]);
+            newInfo.setVendor(bankInfo[3]);
+            newInfo.setAmount(Float.parseFloat(bankInfo[4]));
+            transactions.add(newInfo);
+        }
     }
-
-    public static Arrays()
+    catch (IOException e)
     {
-        ArrayList<String> transaction = new ArrayList<>();
-        String vendor = "";
-        String description = "";
-        float amount = 0F;
-        transaction.add(String.format("%s | %s | %s | %s | $%.2f\n", date, time, description, vendor, amount));
-        System.out.println(transaction);
+        System.out.println("Error found.");
+        e.printStackTrace();
     }
+    return transactions;
+}
 
+public static void printTransactions (ArrayList<AreaB> transactions)
+{
+    for(AreaB transaction:transactions)
+    {
+        System.out.println((String.format("%s | %s | %s | %s | %.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
+    }
+}
 
-
-/*
     public AreaA() throws IOException {
     }
 
     public static void main(String[] args) throws IOException {
-        ArrayList<transaction> transactions = getTransactions();
+    ArrayList<AreaB> transactions = getLog();
+        printTransactions(transactions);
         compiledData();
         makePayment();
         ledgerMenu();
@@ -69,9 +95,6 @@ public class AreaA {
         String vendor = input.nextLine();
         String data;
         data = String.format("%s | %s | %s | %s | $%.2f\n", date, time, description, vendor, amount);
-        ArrayList<String> bankInfo = new ArrayList<String>();
-        bankInfo.add(data);
-        String[] depositDataSplit = data.split("\\|");
         bWriter.write(data);
         bWriter.close();
     }
@@ -112,7 +135,6 @@ public class AreaA {
         }
         String data;
         data = String.format("%s | %s | %s | %s | -$%.2f\n", date, time, category, Type, payment);
-        String[] paymentDataSplit = data.split("\\|");
         bWriter.write(data);
         bWriter.close();
   }
@@ -144,15 +166,8 @@ public class AreaA {
             System.out.println(information);
         }
     }
-    public static void ledgerDeposits() throws IOException
-    {
-        FileReader fReader = new FileReader("TransactionsCopy.csv");
-        BufferedReader bReader = new BufferedReader(fReader);
-        String information;
-        while ((information = bReader.readLine())!= null &&// depositDataSplit
-        {
-            System.out.println(information);
-        }
-    }
+   // public static void ledgerDeposits() throws IOException
+    // {
+    // }
 
 }
