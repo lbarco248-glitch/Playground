@@ -225,7 +225,7 @@ private static ArrayList<AreaB> getTransactions()
     private static void monthToDate()
     {
         getTransactions();
-        System.out.println("Please input the initial month to review. (Please use the following format: YYYY-mm)");
+        System.out.println("Please input the initial month to review. (Please use the following format: YYYY-MM)");
         input.nextLine();
         LocalDate givenDate = LocalDate.parse(input.nextLine() + "-01");
         for(AreaB transaction:transactions)
