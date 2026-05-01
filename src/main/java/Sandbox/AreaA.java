@@ -8,9 +8,12 @@ import java.util.ArrayList;
 
 
 public class AreaA {
+
     public static String date = "";
     public static String time = "";
     static Scanner input = new Scanner(System.in);
+    static ArrayList<AreaB> transactions = new ArrayList<>();
+
 
 public static void time()
 {
@@ -22,20 +25,22 @@ public static void time()
     time = originalTime.format(formattedTime);
 }
 
-private static ArrayList<AreaB> getTransactions() {
-    ArrayList<AreaB> transactions = new ArrayList<AreaB>();
+private static ArrayList<AreaB> getTransactions()
+{
     try
     {
         FileReader fReader = new FileReader("TransactionsCopy.csv");
         BufferedReader bReader = new BufferedReader(fReader);
         String keyboard;
         bReader.readLine();
+        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("kk:mm:ss");
         while ((keyboard = bReader.readLine()) != null)
         {
             String[] bankInfo = keyboard.split("\\|");
             AreaB newInfo = new AreaB();
-            newInfo.setDate(bankInfo[0]);
-            newInfo.setTime(bankInfo[1]);
+            newInfo.setDate(LocalDate.parse(bankInfo[0],formatter1));
+            newInfo.setTime(LocalTime.parse(bankInfo[1],formatter2));
             newInfo.setDescription(bankInfo[2]);
             newInfo.setVendor(bankInfo[3]);
             newInfo.setAmount(Float.parseFloat(bankInfo[4]));
@@ -50,24 +55,26 @@ private static ArrayList<AreaB> getTransactions() {
     return transactions;
 }
 
-public static void printTransactions (ArrayList<AreaB> transactions)
-{
-    for( int i = 1; i < transactions.size(); i++)
-    {
-        AreaB transaction = transactions.get(i);
-        System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
-    }
-}
 
     public AreaA() throws IOException {
     }
 
     public static void main(String[] args) throws IOException {
-    ArrayList<AreaB> transactions = getTransactions();
-      //  printTransactions(transactions);
-        compiledData();
-        makePayment();
-        ledgerMenu();
+            boolean AppRun = true;
+            //Home Screen
+            while (AppRun)
+            {
+                System.out.println("D) Add Deposit\nP) Make Payment\nL) Access Ledger\nX) Exit");
+                char selection = input.next().charAt(0);
+                switch(selection) {
+                    case 'D', 'd' -> compiledData();
+                    case 'P', 'p' -> makePayment();
+                    case 'l', 'L' -> ledgerMenu();
+                    case 'X', 'x' -> AppRun = false;
+                    default -> System.out.println("Invalid selection. Please try again.");
+                }
+            }
+            input.close();
     }
 
 
@@ -136,24 +143,28 @@ public static void printTransactions (ArrayList<AreaB> transactions)
         bWriter.close();
   }
   public static void ledgerMenu() throws IOException {
-        System.out.println("""
-    A) Display all transaction entries
-    B) Display all deposits
-    P) Display all payments
-    R) Display custom report
-    H) Return to home page
-    """);
-    char selection = input.next().charAt(0);
-    switch (selection)
-    {
-        case 'A', 'a' -> ledgerAll();
-        case 'B', 'b' -> System.out.println("Placeholder2");
-        case 'P', 'p' -> System.out.println("Placeholder3");
-        case 'R', 'r' -> System.out.println("Placeholder4");
-        case 'H', 'h' -> System.out.println("Placeholder5");
-        default -> System.out.println("Invalid selection.");
-    }
-    }
+  boolean inLedgerMenu = true;
+    while (inLedgerMenu)
+      {
+          System.out.println("""
+                  A) Display all transaction entries
+                  D) Display all deposits
+                  P) Display all payments
+                  R) Display custom report
+                  H) Return to home page
+                  """);
+
+          char selection = input.next().charAt(0);
+          switch (selection) {
+              case 'A', 'a' -> ledgerAll();
+              case 'D', 'd' -> ledgerDeposits();
+              case 'P', 'p' -> ledgerPayments();
+              case 'R', 'r' -> ledgerReport();
+              case 'H', 'h' -> inLedgerMenu = false;
+              default -> System.out.println("Invalid selection.");
+          }
+      }
+  }
     public static void ledgerAll() throws IOException {
         FileReader fReader = new FileReader("TransactionsCopy.csv");
         BufferedReader bReader = new BufferedReader(fReader);
@@ -163,19 +174,66 @@ public static void printTransactions (ArrayList<AreaB> transactions)
             System.out.println(information);
         }
     }
-    private static void LedgerDeposits(ArrayList<AreaB> transactions)
+    private static void ledgerDeposits()
     {
         /*Loop through file backwards to help sort*/
         getTransactions();
         for(AreaB transaction:transactions)
         {
-            if(transaction.getAmount()hasChar)
-            System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
+            if(transaction.getAmount() > 0)
+                System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
         }
     }
-
-   // public static void ledgerDeposits() throws IOException
-    // {
-    // }
-
+    
+    private static void ledgerPayments()
+    {
+        /*Loop through file backwards to help sort*/
+        getTransactions();
+        for(AreaB transaction:transactions)
+        {
+            if(transaction.getAmount() < 0)
+                System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
+        }
+    }
+    
+    private static void ledgerReport()
+    {
+        boolean inLedgerReport = true;
+        System.out.println("""
+                1) Month to Date
+                2) Previous Month
+                3) Year to Date
+                4) Previous Year
+                5) Search by Vendor
+                0) Back
+                """);
+        while (inLedgerReport) {
+            int selection = input.nextInt();
+            switch (selection)
+            {
+                case 1 -> monthToDate();
+                case 2 -> ledgerDeposits();
+                case 3 -> ledgerPayments();
+                case 4 -> System.out.println("Placeholder4");
+                case 5 -> inLedgerReport = false;
+                default -> System.out.println("Invalid selection.");
+            }
+        }
+    }
+    
+    private static void monthToDate()
+    {
+        getTransactions();
+        System.out.println("Please input the initial month to review. (Please use the following format: YYYY-mm)");
+        input.nextLine();
+        LocalDate givenDate = LocalDate.parse(input.nextLine() + "-01");
+        for(AreaB transaction:transactions)
+        {
+            LocalDate storedDate = transaction.getDate();
+            if (givenDate.isBefore(storedDate))
+            {
+            System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
+            }
+        }
+    }
 }
