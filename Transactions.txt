@@ -1,1 +1,1 @@
-2026-04-30 | 12:38:40 AM | Check Deposit | IRS |$1541.00
+2026-04-30|12:38:40 AM|Check Deposit|IRS|-1541.00

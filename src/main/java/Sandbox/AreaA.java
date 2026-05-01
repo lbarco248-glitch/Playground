@@ -11,11 +11,6 @@ public class AreaA {
     public static String date = "";
     public static String time = "";
     static Scanner input = new Scanner(System.in);
-    static String[] depositDataSplit ={};
-    static String[] paymentDataSplit = {};
-    static ArrayList<AreaB> transactions = new ArrayList<>();
-
-
 
 public static void time()
 {
@@ -27,13 +22,14 @@ public static void time()
     time = originalTime.format(formattedTime);
 }
 
-private static ArrayList<AreaB> getLog() {
-    ArrayList<AreaB> transactions = new ArrayList<>();
+private static ArrayList<AreaB> getTransactions() {
+    ArrayList<AreaB> transactions = new ArrayList<AreaB>();
     try
     {
-        FileReader fReader = new FileReader("TransactionsFake.csv");
+        FileReader fReader = new FileReader("TransactionsCopy.csv");
         BufferedReader bReader = new BufferedReader(fReader);
         String keyboard;
+        bReader.readLine();
         while ((keyboard = bReader.readLine()) != null)
         {
             String[] bankInfo = keyboard.split("\\|");
@@ -56,9 +52,10 @@ private static ArrayList<AreaB> getLog() {
 
 public static void printTransactions (ArrayList<AreaB> transactions)
 {
-    for(AreaB transaction:transactions)
+    for( int i = 1; i < transactions.size(); i++)
     {
-        System.out.println((String.format("%s | %s | %s | %s | %.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
+        AreaB transaction = transactions.get(i);
+        System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
     }
 }
 
@@ -66,8 +63,8 @@ public static void printTransactions (ArrayList<AreaB> transactions)
     }
 
     public static void main(String[] args) throws IOException {
-    ArrayList<AreaB> transactions = getLog();
-        printTransactions(transactions);
+    ArrayList<AreaB> transactions = getTransactions();
+      //  printTransactions(transactions);
         compiledData();
         makePayment();
         ledgerMenu();
@@ -94,7 +91,7 @@ public static void printTransactions (ArrayList<AreaB> transactions)
         input.nextLine();
         String vendor = input.nextLine();
         String data;
-        data = String.format("%s | %s | %s | %s | $%.2f\n", date, time, description, vendor, amount);
+        data = String.format("%s | %s | %s | %s | %.2f\n", date, time, description, vendor, amount);
         bWriter.write(data);
         bWriter.close();
     }
@@ -134,7 +131,7 @@ public static void printTransactions (ArrayList<AreaB> transactions)
             default -> System.out.println("Invalid selection.");
         }
         String data;
-        data = String.format("%s | %s | %s | %s | -$%.2f\n", date, time, category, Type, payment);
+        data = String.format("%s | %s | %s | %s | -%.2f\n", date, time, category, Type, payment);
         bWriter.write(data);
         bWriter.close();
   }
@@ -166,6 +163,17 @@ public static void printTransactions (ArrayList<AreaB> transactions)
             System.out.println(information);
         }
     }
+    private static void LedgerDeposits(ArrayList<AreaB> transactions)
+    {
+        /*Loop through file backwards to help sort*/
+        getTransactions();
+        for(AreaB transaction:transactions)
+        {
+            if(transaction.getAmount()hasChar)
+            System.out.println((String.format("%s|%s|%s|%s|%.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount())));
+        }
+    }
+
    // public static void ledgerDeposits() throws IOException
     // {
     // }

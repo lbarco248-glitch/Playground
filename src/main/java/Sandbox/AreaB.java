@@ -1,11 +1,15 @@
 package Sandbox;
 
 public class AreaB {
+
+    public AreaB()
+    {}
+
     private String date = "";
     private String time = "";
     private String description = "";
     private String vendor = "";
-    private float amount = 0;
+    private float amount = 0F;
 
     public String getDate() {
         return date;
@@ -45,5 +49,16 @@ public class AreaB {
 
     public void setAmount(float amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public String toString() {
+        return "AreaB{" +
+                "date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", description='" + description + '\'' +
+                ", vendor='" + vendor + '\'' +
+                ", amount=" + amount +
+                '}';
     }
 }
